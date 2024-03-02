@@ -25,7 +25,6 @@ void mmap_resource_destructor(ErlNifEnv* caller_env, void * obj) {
   struct mmap_resource * mmap_resource = obj;
   if (munmap(mmap_resource->data, mmap_resource->size) == -1) {
     // Umm...
-    return;
   }
   close(mmap_resource->fd);
 }
