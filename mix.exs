@@ -7,6 +7,7 @@ defmodule Mmap.MixProject do
       version: "0.1.0",
       elixir: "~> 1.16",
       compilers: [:elixir_make] ++ Mix.compilers,
+      make_clean: ["clean"],
       start_permanent: Mix.env() == :prod,
       package: package(),
       deps: deps()
