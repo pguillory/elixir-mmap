@@ -10,7 +10,7 @@
 ERL_NIF_TERM ok_atom;
 ERL_NIF_TERM error_atom;
 
-void init_atoms(ErlNifEnv * env) {
+void make_atoms(ErlNifEnv * env) {
   ok_atom = enif_make_atom(env, "ok");
   error_atom = enif_make_atom(env, "error");
 }
@@ -81,6 +81,10 @@ static ERL_NIF_TERM read_nif(ErlNifEnv * env, int argc, const ERL_NIF_TERM argv[
     return enif_make_badarg(env);
   }
 
+  if (string_value.size >= 256) {
+    return enif_make_tuple2(env, error_atom, enif_make_atom(env, "enametoolong"));
+  }
+
   char filename[256];
   assert(string_value.size < 256);
   memcpy(filename, string_value.data, string_value.size);
@@ -88,18 +92,17 @@ static ERL_NIF_TERM read_nif(ErlNifEnv * env, int argc, const ERL_NIF_TERM argv[
 
   int fd = open(filename, O_RDONLY);
   if (fd == -1) {
-    // printf("error: %i - %s - %s\r\n", errno, strerror(errno), strerror_r(errno)); fflush(stdout);
     return enif_make_tuple2(env, error_atom, enif_make_atom(env, errno_string()));
   }
 
   struct stat st;
   if (stat(filename, &st) == -1) {
-    return enif_make_tuple2(env, error_atom, enif_make_atom(env, "stat"));
+    return enif_make_tuple2(env, error_atom, enif_make_atom(env, errno_string()));
   }
 
   char * data = mmap(0, st.st_size, PROT_READ, MAP_SHARED, fd, 0);
   if (data == MAP_FAILED) {
-    return enif_make_tuple2(env, error_atom, enif_make_atom(env, "mmap"));
+    return enif_make_tuple2(env, error_atom, enif_make_atom(env, errno_string()));
   }
 
   struct mmap_resource * mmap_resource = alloc_mmap_resource();
@@ -116,7 +119,7 @@ static ErlNifFunc nif_funcs[] = {
 };
 
 int load(ErlNifEnv * env, void ** priv_data, ERL_NIF_TERM load_info) {
-  init_atoms(env);
+  make_atoms(env);
   open_mmap_resource(env);
   return 0;
 }

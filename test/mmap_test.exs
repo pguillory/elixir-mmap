@@ -45,4 +45,11 @@ defmodule MmapTest do
              action: "read file"
            }
   end
+
+  test "read rejects long filenames" do
+    long_filename = String.duplicate("a", 1000)
+
+    assert catch_error(Mmap.read!(long_filename)) |> Exception.message() ==
+             "could not read file #{inspect(long_filename)}: file name too long"
+  end
 end
