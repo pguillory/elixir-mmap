@@ -6,6 +6,7 @@ defmodule Mmap.MixProject do
       app: :mmap,
       version: "0.1.0",
       elixir: "~> 1.16",
+      compilers: [:elixir_make] ++ Mix.compilers,
       start_permanent: Mix.env() == :prod,
       package: package(),
       deps: deps()
@@ -29,6 +30,7 @@ defmodule Mmap.MixProject do
 
   defp deps do
     [
+      {:elixir_make, "~> 0.4", runtime: false},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end
