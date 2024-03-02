@@ -30,6 +30,7 @@ defmodule Mmap.MixProject do
 
   defp deps do
     [
+      {:benchee, "~> 1.0", only: :dev},
       {:elixir_make, "~> 0.4", runtime: false},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
