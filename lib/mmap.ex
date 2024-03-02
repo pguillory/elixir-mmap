@@ -2,7 +2,8 @@ defmodule Mmap do
   @on_load :init
 
   def init do
-    :ok = :erlang.load_nif("priv/mmap", 0)
+    filename = :code.priv_dir(:mmap) |> Path.join("mmap")
+    :ok = :erlang.load_nif(filename, 0)
   end
 
   def read(_filename), do: exit(:nif_not_loaded)
