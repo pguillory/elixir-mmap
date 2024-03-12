@@ -4,7 +4,7 @@ defmodule Mmap.MixProject do
   def project do
     [
       app: :mmap,
-      version: "0.1.0",
+      version: "0.1.1",
       elixir: "~> 1.16",
       compilers: [:elixir_make] ++ Mix.compilers,
       make_clean: ["clean"],
